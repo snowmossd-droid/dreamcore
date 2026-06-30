@@ -7,6 +7,7 @@ on:
         description: 'Path tới jar trong repo'
         required: false
         default: 'dreamcore-1.0.0.jar'
+
 jobs:
   decompile:
     runs-on: ubuntu-latest
@@ -24,7 +25,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release download --repo Vineflower/vineflower --pattern "vineflower-*.jar" -D vf-download
-          ls vf-download
           mv "$(ls vf-download/*.jar | grep -v slim | head -n1)" vineflower.jar
 
       - name: Decompile
@@ -32,15 +32,9 @@ jobs:
           mkdir -p decompiled
           java -jar vineflower.jar "${{ github.event.inputs.jar_path }}" decompiled/
 
-      - name: Extract sources for review
-        run: |
-          cd decompiled
-          unzip -o *.jar -d extracted
-          find . -maxdepth 1 -name "*.jar" -delete
-
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: dreamcore-decompiled
-          path: decompiled/extracted
+          path: decompiled
           retention-days: 7
