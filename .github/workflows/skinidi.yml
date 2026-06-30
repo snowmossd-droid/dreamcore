@@ -1,0 +1,45 @@
+name: Decompile dreamcore-1.0.0.jar
+
+on:
+  workflow_dispatch:
+    inputs:
+      jar_path:
+        description: 'Path tới jar trong repo, hoặc để trống dùng artifact build mới nhất'
+        required: false
+        default: 'build/libs/dreamcore-1.0.0.jar'
+
+jobs:
+  decompile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build jar (nếu cần)
+        run: ./gradlew build -x test
+
+      - name: Download Vineflower
+        run: curl -L -o vineflower.jar https://github.com/Vineflower/vineflower/releases/latest/download/vineflower.jar
+
+      - name: Decompile
+        run: |
+          mkdir -p decompiled
+          java -jar vineflower.jar "${{ github.event.inputs.jar_path }}" decompiled/
+
+      - name: Extract sources for review
+        run: |
+          cd decompiled
+          unzip -o *.jar -d extracted
+          find . -maxdepth 1 -name "*.jar" -delete
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dreamcore-1.0.0-decompiled
+          path: decompiled/extracted
+          retention-days: 7
