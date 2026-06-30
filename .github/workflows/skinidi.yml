@@ -6,8 +6,7 @@ on:
       jar_path:
         description: 'Path tới jar trong repo'
         required: false
-        default: 'libs/dreamcore-1.0.0.jar'
-
+        default: 'dreamcore-1.0.0.jar'
 jobs:
   decompile:
     runs-on: ubuntu-latest
