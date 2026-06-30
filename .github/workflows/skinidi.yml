@@ -21,7 +21,9 @@ jobs:
           distribution: 'temurin'
 
       - name: Download Vineflower
-        run: curl -L -o vineflower.jar https://github.com/Vineflower/vineflower/releases/latest/download/vineflower.jar
+        run: gh release download --repo Vineflower/vineflower --pattern "vineflower-*.jar" --exclude "*-slim*" -O vineflower.jar
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Decompile
         run: |
