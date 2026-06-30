@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       jar_path:
-        description: 'Path tới jar trong repo, hoặc để trống dùng artifact build mới nhất'
+        description: 'Path tới jar trong repo'
         required: false
-        default: 'build/libs/dreamcore-1.0.0.jar'
+        default: 'libs/dreamcore-1.0.0.jar'
 
 jobs:
   decompile:
@@ -19,12 +19,6 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-
-      - name: Build jar (nếu cần)
-        run: ./gradlew build -x test
 
       - name: Download Vineflower
         run: curl -L -o vineflower.jar https://github.com/Vineflower/vineflower/releases/latest/download/vineflower.jar
